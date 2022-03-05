@@ -1,0 +1,11 @@
+main: xyz.garslity093.serverfunc.Func
+name: GrSurFunc
+version: 1.0.0
+author: Gerry5126
+api-version: 1.13
+commands:
+  serverfunc:
+    aliases:
+      - func
+      - sf
+    permission: "serverfunc.use"
