@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Score;
+import xyz.garslity093.serverfunc.deathbox.DeathBoxInventoryHolder;
+import xyz.garslity093.serverfunc.deathbox.utils.DeathBoxUtils;
 
 import java.util.ArrayList;
 
@@ -59,7 +61,7 @@ public final class Listeners implements Listener {
                         event.getBlock().getLocation().getBlockY() == location.getBlockY() &&
                         event.getBlock().getLocation().getBlockZ() == location.getBlockZ() &&
                         event.getBlock().getLocation().getWorld() == location.getWorld()) {
-                    if (!Utils.isAnyOneOpeningBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
+                    if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
                         new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ() - 1).getBlock().setType(Material.AIR);
                         ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getBoxConfig().getList("box." + key + ".items");
                         for (ItemStack itemStack : itemStacks) {
@@ -84,8 +86,9 @@ public final class Listeners implements Listener {
         Player player = event.getEntity().getPlayer();
         if (!event.getKeepInventory()) {
             if (!player.getInventory().isEmpty()) {
-                if (player.getLocation().getBlockY() >= player.getWorld().getMinHeight() && player.getLocation().getBlockY() < player.getWorld().getMaxHeight()) {
-                    Utils.addBox(Utils.getNewChestLoc(player), Utils.getNewSignLoc(player), player);
+                if (player.getLocation().getBlockY() >= player.getWorld().getMinHeight() &&
+                        player.getLocation().getBlockY() < player.getWorld().getMaxHeight()) {
+                    DeathBoxUtils.addBox(DeathBoxUtils.getNewChestLoc(player), player);
                     event.getDrops().clear();
                 }
             }
@@ -103,8 +106,8 @@ public final class Listeners implements Listener {
                             event.getClickedBlock().getLocation().getBlockZ() == location.getBlockZ() &&
                             event.getClickedBlock().getLocation().getWorld() == location.getWorld()) {
                         event.setCancelled(true);
-                        Inventory inventory = Bukkit.createInventory(new BoxInventoryHolder(Func.getBoxConfig().getString("box." + key + ".chest_id")), 54);
-                        if (!Utils.isAnyOneOpeningBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
+                        Inventory inventory = Bukkit.createInventory(new DeathBoxInventoryHolder(Func.getBoxConfig().getString("box." + key + ".chest_id")), 54);
+                        if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
                             ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getBoxConfig().getList("box." + key + ".items");
                             for (ItemStack itemStack : itemStacks) {
                                 inventory.addItem(itemStack);
@@ -157,8 +160,8 @@ public final class Listeners implements Listener {
 
     @EventHandler
     public void onPlayerCloseInventory(InventoryCloseEvent event) {
-        if (event.getInventory().getHolder() instanceof BoxInventoryHolder) {
-            BoxInventoryHolder holder = (BoxInventoryHolder) event.getInventory().getHolder();
+        if (event.getInventory().getHolder() instanceof DeathBoxInventoryHolder) {
+            DeathBoxInventoryHolder holder = (DeathBoxInventoryHolder) event.getInventory().getHolder();
             for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
                 if (Func.getBoxConfig().get("box." + key + ".chest_id").equals(holder.getChestID())) {
                     ArrayList<ItemStack> itemStacks = new ArrayList<>();

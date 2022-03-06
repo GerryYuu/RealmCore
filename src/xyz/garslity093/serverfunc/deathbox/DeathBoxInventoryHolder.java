@@ -1,13 +1,13 @@
-package xyz.garslity093.serverfunc;
+package xyz.garslity093.serverfunc.deathbox;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-public class BoxInventoryHolder implements InventoryHolder {
+public class DeathBoxInventoryHolder implements InventoryHolder {
     protected String chestID;
     protected Inventory inventory;
 
-    public BoxInventoryHolder(String uuid) {
+    public DeathBoxInventoryHolder(String uuid) {
         this.chestID = uuid;
     }
 
