@@ -14,6 +14,7 @@ public final class Command implements TabExecutor {
                 commandSender.sendMessage("重载成功.");
                 Func.getPlugin().reloadConfig();
                 Func.reloadBoxConfig();
+                Func.loadDeathBoxMaterials();
             }
         }
         return true;

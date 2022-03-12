@@ -8,6 +8,13 @@ public final class DeathBoxLocation extends Location {
         super(world, x, y, z);
     }
 
+    public DeathBoxLocation(Location location) {
+        super(location.getWorld(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ());
+    }
+
     public Location getSignLocation() {
         return new Location(getWorld(), getX(), getY(), getZ() - 1);
     }

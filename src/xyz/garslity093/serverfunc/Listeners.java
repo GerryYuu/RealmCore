@@ -38,8 +38,8 @@ public final class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak1(BlockBreakEvent event) {
         if (event.getBlock().getType() == Material.OAK_WALL_SIGN) {
-            for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                Location location = Func.getBoxConfig().getLocation("box." + key + ".sign_loc");
+            for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                Location location = Func.getDeathBoxConfig().getLocation("box." + key + ".sign_loc");
                 if (event.getBlock().getLocation().getBlockX() == location.getBlockX() &&
                         event.getBlock().getLocation().getBlockY() == location.getBlockY() &&
                         event.getBlock().getLocation().getBlockZ() == location.getBlockZ() &&
@@ -55,19 +55,19 @@ public final class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak2(BlockBreakEvent event) {
         if (event.getBlock().getType() == Material.CHEST) {
-            for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                Location location = Func.getBoxConfig().getLocation("box." + key + ".chest_loc");
+            for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                Location location = Func.getDeathBoxConfig().getLocation("box." + key + ".chest_loc");
                 if (event.getBlock().getLocation().getBlockX() == location.getBlockX() &&
                         event.getBlock().getLocation().getBlockY() == location.getBlockY() &&
                         event.getBlock().getLocation().getBlockZ() == location.getBlockZ() &&
                         event.getBlock().getLocation().getWorld() == location.getWorld()) {
-                    if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
+                    if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
                         new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ() - 1).getBlock().setType(Material.AIR);
-                        ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getBoxConfig().getList("box." + key + ".items");
+                        ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getDeathBoxConfig().getList("box." + key + ".items");
                         for (ItemStack itemStack : itemStacks) {
                             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), itemStack);
                         }
-                        Func.getBoxConfig().set("box." + event.getBlock().getLocation().getBlockX() + "," + event.getBlock().getLocation().getBlockY() + "," + event.getBlock().getLocation().getBlockZ(), null);
+                        Func.getDeathBoxConfig().set("box." + event.getBlock().getLocation().getBlockX() + "," + event.getBlock().getLocation().getBlockY() + "," + event.getBlock().getLocation().getBlockZ(), null);
                         Func.saveBoxRecord();
                         event.setCancelled(true);
                         event.getBlock().setType(Material.AIR);
@@ -88,7 +88,7 @@ public final class Listeners implements Listener {
             if (!player.getInventory().isEmpty()) {
                 if (player.getLocation().getBlockY() >= player.getWorld().getMinHeight() &&
                         player.getLocation().getBlockY() < player.getWorld().getMaxHeight()) {
-                    DeathBoxUtils.addBox(DeathBoxUtils.getNewChestLoc(player), player);
+                    DeathBoxUtils.addBox(DeathBoxUtils.getNewChestLoc(player.getLocation()), player);
                     event.getDrops().clear();
                 }
             }
@@ -99,16 +99,16 @@ public final class Listeners implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock().getType().equals(Material.CHEST)) {
-                for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                    Location location = Func.getBoxConfig().getLocation("box." + key + ".chest_loc");
+                for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                    Location location = Func.getDeathBoxConfig().getLocation("box." + key + ".chest_loc");
                     if (event.getClickedBlock().getLocation().getBlockX() == location.getBlockX() &&
                             event.getClickedBlock().getLocation().getBlockY() == location.getBlockY() &&
                             event.getClickedBlock().getLocation().getBlockZ() == location.getBlockZ() &&
                             event.getClickedBlock().getLocation().getWorld() == location.getWorld()) {
                         event.setCancelled(true);
-                        Inventory inventory = Bukkit.createInventory(new DeathBoxInventoryHolder(Func.getBoxConfig().getString("box." + key + ".chest_id")), 54);
-                        if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getBoxConfig().getString("box." + key + ".chest_id"))) {
-                            ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getBoxConfig().getList("box." + key + ".items");
+                        Inventory inventory = Bukkit.createInventory(new DeathBoxInventoryHolder(Func.getDeathBoxConfig().getString("box." + key + ".chest_id")), 54);
+                        if (!DeathBoxUtils.isAnyoneUsingDeathBox(Func.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
+                            ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) Func.getDeathBoxConfig().getList("box." + key + ".items");
                             for (ItemStack itemStack : itemStacks) {
                                 inventory.addItem(itemStack);
                             }
@@ -128,9 +128,9 @@ public final class Listeners implements Listener {
     public void onBlockExplode(BlockExplodeEvent event) {
         ArrayList<Block> blocks = new ArrayList<>();
         for (Block block : event.blockList()) {
-            for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                Location locationChest = Func.getBoxConfig().getLocation("box." + key + ".chest_loc");
-                Location locationSign = Func.getBoxConfig().getLocation("box." + key + ".sign_loc");
+            for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                Location locationChest = Func.getDeathBoxConfig().getLocation("box." + key + ".chest_loc");
+                Location locationSign = Func.getDeathBoxConfig().getLocation("box." + key + ".sign_loc");
                 if (block.getLocation().equals(locationChest) || block.getLocation().equals(locationSign)) {
                     blocks.add(block);
                 }
@@ -145,9 +145,9 @@ public final class Listeners implements Listener {
     public void onEntityExplode(EntityExplodeEvent event) {
         ArrayList<Block> blocks = new ArrayList<>();
         for (Block block : event.blockList()) {
-            for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                Location locationChest = Func.getBoxConfig().getLocation("box." + key + ".chest_loc");
-                Location locationSign = Func.getBoxConfig().getLocation("box." + key + ".sign_loc");
+            for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                Location locationChest = Func.getDeathBoxConfig().getLocation("box." + key + ".chest_loc");
+                Location locationSign = Func.getDeathBoxConfig().getLocation("box." + key + ".sign_loc");
                 if (block.getLocation().equals(locationChest) || block.getLocation().equals(locationSign)) {
                     blocks.add(block);
                 }
@@ -162,21 +162,21 @@ public final class Listeners implements Listener {
     public void onPlayerCloseInventory(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof DeathBoxInventoryHolder) {
             DeathBoxInventoryHolder holder = (DeathBoxInventoryHolder) event.getInventory().getHolder();
-            for (String key : Func.getBoxConfig().getConfigurationSection("box").getKeys(false)) {
-                if (Func.getBoxConfig().get("box." + key + ".chest_id").equals(holder.getChestID())) {
+            for (String key : Func.getDeathBoxConfig().getConfigurationSection("box").getKeys(false)) {
+                if (Func.getDeathBoxConfig().get("box." + key + ".chest_id").equals(holder.getChestID())) {
                     ArrayList<ItemStack> itemStacks = new ArrayList<>();
                     for (ItemStack itemStack : event.getInventory().getContents()) {
                         if (itemStack != null) {
                             itemStacks.add(itemStack);
                         }
                     }
-                    Func.getBoxConfig().set("box." + key + ".items", itemStacks);
+                    Func.getDeathBoxConfig().set("box." + key + ".items", itemStacks);
                     if (event.getPlayer() instanceof Player) {
                         Player player = (Player) event.getPlayer();
                         if (itemStacks.isEmpty()) {
-                            Func.getBoxConfig().getLocation("box." + key + ".sign_loc").getBlock().setType(Material.AIR);
-                            Func.getBoxConfig().getLocation("box." + key + ".chest_loc").getBlock().setType(Material.AIR);
-                            Func.getBoxConfig().set("box." + key, null);
+                            Func.getDeathBoxConfig().getLocation("box." + key + ".sign_loc").getBlock().setType(Material.AIR);
+                            Func.getDeathBoxConfig().getLocation("box." + key + ".chest_loc").getBlock().setType(Material.AIR);
+                            Func.getDeathBoxConfig().set("box." + key, null);
                             Func.saveBoxRecord();
                             player.sendTitle(" ", "§6这个箱子已自动摧毁.", 0, 70, 0);
                         }
@@ -187,4 +187,3 @@ public final class Listeners implements Listener {
         }
     }
 }
-

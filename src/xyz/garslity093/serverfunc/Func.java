@@ -1,6 +1,7 @@
 package xyz.garslity093.serverfunc;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,11 +14,14 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public final class Func extends JavaPlugin {
     private static Plugin plugin;
     private static File boxFile;
     private static FileConfiguration boxConfig;
+
+    private static ArrayList<Material> deathBoxReplaceBlocks;
 
     public static Plugin getPlugin() {
         return plugin;
@@ -36,7 +40,7 @@ public final class Func extends JavaPlugin {
         return boxFile;
     }
 
-    public static FileConfiguration getBoxConfig() {
+    public static FileConfiguration getDeathBoxConfig() {
         return boxConfig;
     }
 
@@ -58,6 +62,14 @@ public final class Func extends JavaPlugin {
         }
     }
 
+    public static ArrayList<Material> getDeathBoxReplaceBlocks() {
+        return deathBoxReplaceBlocks;
+    }
+
+    public static void loadDeathBoxMaterials() {
+        deathBoxReplaceBlocks = CommonUtils.legalMaterialsFilter(Func.getPlugin().getConfig().getStringList("deathBoxSettings.replaceBlocks"));
+    }
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -69,6 +81,10 @@ public final class Func extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginCommand("serverfunc").setExecutor(new Command());
         getServer().getPluginCommand("serverfunc").setTabCompleter(new Command());
+        if (!new File(getDataFolder(), "config.yml").exists()) {
+            saveDefaultConfig();
+        }
         initializeDigBoard();
+        loadDeathBoxMaterials();
     }
 }

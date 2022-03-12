@@ -29,64 +29,36 @@ public class DeathBoxUtils {
         sign.update();
         WallSign wallSign = (WallSign) signLoc.getBlock().getBlockData();
         wallSign.setFacing(BlockFace.NORTH);
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_loc", new Location(deathBoxLocation.getWorld(),
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_loc", new Location(deathBoxLocation.getWorld(),
                 deathBoxLocation.getBlockX(),
                 deathBoxLocation.getBlockY(),
                 deathBoxLocation.getBlockZ()));
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".sign_loc", signLoc);
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner", player.getUniqueId().toString());
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner_name", player.getName());
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_id", UUID.randomUUID().toString());
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".sign_loc", signLoc);
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner", player.getUniqueId().toString());
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner_name", player.getName());
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_id", UUID.randomUUID().toString());
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack != null) {
                 itemStacks.add(itemStack);
             }
         }
-        Func.getBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".items", itemStacks);
+        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".items", itemStacks);
         Func.saveBoxRecord();
     }
 
-    public static DeathBoxLocation getNewChestLoc(Player player) {
-        DeathBoxLocation deathBoxLocation = new DeathBoxLocation(player.getWorld(),
-                player.getLocation().getBlockX(), player.getLocation().getBlockY(),
-                player.getLocation().getBlockZ());
-        if ((deathBoxLocation.getBlock().getType() == Material.AIR ||
-                deathBoxLocation.getBlock().getType() == Material.GRASS ||
-                deathBoxLocation.getBlock().getType() == Material.TALL_GRASS ||
-                deathBoxLocation.getBlock().getType() == Material.SEAGRASS ||
-                deathBoxLocation.getBlock().getType() == Material.TALL_SEAGRASS ||
-                deathBoxLocation.getBlock().getType() == Material.SNOW) && (deathBoxLocation.getSignLocation().getBlock().getType() == Material.AIR ||
-                deathBoxLocation.getSignLocation().getBlock().getType() == Material.GRASS ||
-                deathBoxLocation.getSignLocation().getBlock().getType() == Material.TALL_GRASS ||
-                deathBoxLocation.getSignLocation().getBlock().getType() == Material.SEAGRASS ||
-                deathBoxLocation.getSignLocation().getBlock().getType() == Material.TALL_SEAGRASS ||
-                deathBoxLocation.getSignLocation().getBlock().getType() == Material.SNOW)) {
-            if (isOnGround(deathBoxLocation)) {
-                return deathBoxLocation;
-            }
+    public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
+        Location deathBoxLocation;
+        if (playerDeathLocation.getBlock().getType() == Material.AIR &&
+                new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ() - 1).getBlock().getType() == Material.AIR) {
+            deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ());
         } else {
             int y = 1;
             while (true) {
-                if ((player.getLocation().getBlockY() + y < player.getWorld().getMaxHeight()) && player.getLocation().getBlockY() + y >= player.getWorld().getMinHeight()) {
-                    deathBoxLocation = new DeathBoxLocation(player.getWorld(),
-                            player.getLocation().getBlockX(),
-                            player.getLocation().getBlockY() + y,
-                            player.getLocation().getBlockZ());
-                    if ((deathBoxLocation.getBlock().getType() == Material.AIR ||
-                            deathBoxLocation.getBlock().getType() == Material.GRASS ||
-                            deathBoxLocation.getBlock().getType() == Material.TALL_GRASS ||
-                            deathBoxLocation.getBlock().getType() == Material.SEAGRASS ||
-                            deathBoxLocation.getBlock().getType() == Material.TALL_SEAGRASS ||
-                            deathBoxLocation.getBlock().getType() == Material.SNOW) && (deathBoxLocation.getSignLocation().getBlock().getType() == Material.AIR ||
-                            deathBoxLocation.getSignLocation().getBlock().getType() == Material.GRASS ||
-                            deathBoxLocation.getSignLocation().getBlock().getType() == Material.TALL_GRASS ||
-                            deathBoxLocation.getSignLocation().getBlock().getType() == Material.SEAGRASS ||
-                            deathBoxLocation.getSignLocation().getBlock().getType() == Material.TALL_SEAGRASS ||
-                            deathBoxLocation.getSignLocation().getBlock().getType() == Material.SNOW)) {
-                        if (isOnGround(deathBoxLocation)) {
-                            return deathBoxLocation;
-                        }
+                if (!(playerDeathLocation.getBlockY() + y == playerDeathLocation.getWorld().getMaxHeight())) {
+                    if (new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ()).getBlock().getType() == Material.AIR &&
+                            new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ() - 1).getBlock().getType() == Material.AIR) {
+                        break;
                     } else {
                         y++;
                     }
@@ -94,11 +66,11 @@ public class DeathBoxUtils {
                     break;
                 }
             }
+            deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ());
         }
-        return new DeathBoxLocation(player.getWorld(), player.getLocation().getBlockX(),
-                player.getLocation().getBlockY(),
-                player.getLocation().getBlockZ());
+        return new DeathBoxLocation(deathBoxLocation);
     }
+
 
     public static boolean isAnyoneUsingDeathBox(String boxID) {
         for (UUID p : ServerUtils.getOnlinePlayers()) {
@@ -112,58 +84,22 @@ public class DeathBoxUtils {
         return false;
     }
 
-    public static boolean isOnGround(DeathBoxLocation deathBoxLocation) {
-        if (new Location(deathBoxLocation.getWorld(),
+    /*public static boolean isOnGround(DeathBoxLocation deathBoxLocation) {
+        Material blockUnderBox = new Location(deathBoxLocation.getWorld(),
                 deathBoxLocation.getBlockX(),
                 deathBoxLocation.getBlockY() - 1,
-                deathBoxLocation.getBlockZ()).getBlock().getType() != Material.AIR &&
-                new Location(deathBoxLocation.getWorld(),
-                        deathBoxLocation.getBlockX(),
-                        deathBoxLocation.getBlockY() - 1,
-                        deathBoxLocation.getBlockZ()).getBlock().getType() != Material.GRASS &&
-                new Location(deathBoxLocation.getWorld(),
-                        deathBoxLocation.getBlockX(),
-                        deathBoxLocation.getBlockY() - 1,
-                        deathBoxLocation.getBlockZ()).getBlock().getType() != Material.TALL_GRASS &&
-                new Location(deathBoxLocation.getWorld(),
-                        deathBoxLocation.getBlockX(),
-                        deathBoxLocation.getBlockY() - 1,
-                        deathBoxLocation.getBlockZ()).getBlock().getType() != Material.SEAGRASS &&
-                new Location(deathBoxLocation.getWorld(),
-                        deathBoxLocation.getBlockX(),
-                        deathBoxLocation.getBlockY() - 1,
-                        deathBoxLocation.getBlockZ()).getBlock().getType() != Material.TALL_SEAGRASS &&
-                new Location(deathBoxLocation.getWorld(),
-                        deathBoxLocation.getBlockX(),
-                        deathBoxLocation.getBlockY() - 1,
-                        deathBoxLocation.getBlockZ()).getBlock().getType() != Material.SNOW
-
-        ) {
-            return new Location(deathBoxLocation.getSignLocation().getWorld(),
-                    deathBoxLocation.getSignLocation().getBlockX(),
-                    deathBoxLocation.getSignLocation().getBlockY() - 1,
-                    deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.AIR &&
-                    new Location(deathBoxLocation.getSignLocation().getWorld(),
-                            deathBoxLocation.getSignLocation().getBlockX(),
-                            deathBoxLocation.getSignLocation().getBlockY() - 1,
-                            deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.GRASS &&
-                    new Location(deathBoxLocation.getSignLocation().getWorld(),
-                            deathBoxLocation.getSignLocation().getBlockX(),
-                            deathBoxLocation.getSignLocation().getBlockY() - 1,
-                            deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.TALL_GRASS &&
-                    new Location(deathBoxLocation.getSignLocation().getWorld(),
-                            deathBoxLocation.getSignLocation().getBlockX(),
-                            deathBoxLocation.getSignLocation().getBlockY() - 1,
-                            deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.SEAGRASS &&
-                    new Location(deathBoxLocation.getSignLocation().getWorld(),
-                            deathBoxLocation.getSignLocation().getBlockX(),
-                            deathBoxLocation.getSignLocation().getBlockY() - 1,
-                            deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.TALL_SEAGRASS &&
-                    new Location(deathBoxLocation.getSignLocation().getWorld(),
-                            deathBoxLocation.getSignLocation().getBlockX(),
-                            deathBoxLocation.getSignLocation().getBlockY() - 1,
-                            deathBoxLocation.getSignLocation().getBlockZ()).getBlock().getType() != Material.SNOW;
+                deathBoxLocation.getBlockZ()).getBlock().getType();
+        Material blockUnderSign = new Location(deathBoxLocation.getWorld(),
+                deathBoxLocation.getBlockX(),
+                deathBoxLocation.getBlockY() - 1,
+                deathBoxLocation.getBlockZ() - 1).getBlock().getType();
+        if (Func.getDeathBoxReplaceBlocks().size() > 0)  {
+            if (Func.getDeathBoxReplaceBlocks().contains(blockUnderBox)) {
+                if (Func.getDeathBoxReplaceBlocks().contains(blockUnderSign)) {
+                    return true;
+                }
+            }
         }
-        return false;
-    }
+        return blockUnderBox != Material.AIR && blockUnderSign != Material.AIR;
+    }*/
 }
