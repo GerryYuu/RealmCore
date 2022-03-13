@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc.deathbox;
+package xyz.garslity093.realmcore.functions.deathbox;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;

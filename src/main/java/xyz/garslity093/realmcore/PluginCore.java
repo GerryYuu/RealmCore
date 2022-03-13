@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc;
+package xyz.garslity093.realmcore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,15 +11,16 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import xyz.garslity093.serverfunc.deathbox.DeathBoxListeners;
-import xyz.garslity093.serverfunc.digboard.DigBoardListeners;
-import xyz.garslity093.serverfunc.motdchanger.MOTDChangerListeners;
+import xyz.garslity093.realmcore.functions.deathbox.DeathBoxListeners;
+import xyz.garslity093.realmcore.functions.deathbox.commands.DeathBoxCommand;
+import xyz.garslity093.realmcore.functions.digboard.DigBoardListeners;
+import xyz.garslity093.realmcore.functions.motdchanger.MOTDChangerListeners;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public final class Func extends JavaPlugin {
+public final class PluginCore extends JavaPlugin {
     private static Plugin plugin;
     private static File boxFile;
     private static FileConfiguration boxConfig;
@@ -70,7 +71,7 @@ public final class Func extends JavaPlugin {
     }
 
     public static void loadDeathBoxMaterials() {
-        deathBoxReplaceBlocks = MainUtils.legalMaterialsFilter(Func.getPlugin().getConfig().getStringList("deathBoxSettings.replaceBlocks"));
+        deathBoxReplaceBlocks = PluginUtils.legalMaterialsFilter(PluginCore.getPlugin().getConfig().getStringList("deathBoxSettings.replaceBlocks"));
     }
 
     @Override
@@ -81,12 +82,13 @@ public final class Func extends JavaPlugin {
             saveResource("box-record.yml", false);
         }
         boxConfig = YamlConfiguration.loadConfiguration(boxFile);
-        getServer().getPluginManager().registerEvents(new MainListeners(), this);
+        getServer().getPluginManager().registerEvents(new PluginListeners(), this);
         getServer().getPluginManager().registerEvents(new DigBoardListeners(), this);
         getServer().getPluginManager().registerEvents(new DeathBoxListeners(), this);
         getServer().getPluginManager().registerEvents(new MOTDChangerListeners(), this);
-        getServer().getPluginCommand("serverfunc").setExecutor(new Command());
-        getServer().getPluginCommand("serverfunc").setTabCompleter(new Command());
+        getServer().getPluginCommand("serverfunc").setExecutor(new PluginCommands());
+        getServer().getPluginCommand("serverfunc").setTabCompleter(new PluginCommands());
+        getServer().getPluginCommand("deathbox").setExecutor(new DeathBoxCommand());
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }

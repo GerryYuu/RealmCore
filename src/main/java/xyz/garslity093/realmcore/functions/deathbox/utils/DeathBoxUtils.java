@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc.deathbox.utils;
+package xyz.garslity093.realmcore.functions.deathbox.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -6,12 +6,13 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import xyz.garslity093.serverfunc.DeathBoxLocation;
-import xyz.garslity093.serverfunc.Func;
-import xyz.garslity093.serverfunc.MainUtils;
-import xyz.garslity093.serverfunc.deathbox.DeathBoxInventoryHolder;
+import xyz.garslity093.realmcore.PluginCore;
+import xyz.garslity093.realmcore.PluginUtils;
+import xyz.garslity093.realmcore.functions.deathbox.DeathBoxInventoryHolder;
+import xyz.garslity093.realmcore.functions.deathbox.DeathBoxLocation;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -29,22 +30,22 @@ public final class DeathBoxUtils {
         sign.update();
         WallSign wallSign = (WallSign) signLoc.getBlock().getBlockData();
         wallSign.setFacing(BlockFace.NORTH);
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_loc", new Location(deathBoxLocation.getWorld(),
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_loc", new Location(deathBoxLocation.getWorld(),
                 deathBoxLocation.getBlockX(),
                 deathBoxLocation.getBlockY(),
                 deathBoxLocation.getBlockZ()));
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".sign_loc", signLoc);
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner", player.getUniqueId().toString());
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner_name", player.getName());
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_id", UUID.randomUUID().toString());
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".sign_loc", signLoc);
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner", player.getUniqueId().toString());
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner_name", player.getName());
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_id", UUID.randomUUID().toString());
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack != null) {
                 itemStacks.add(itemStack);
             }
         }
-        Func.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".items", itemStacks);
-        Func.saveBoxRecord();
+        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".items", itemStacks);
+        PluginCore.saveBoxRecord();
     }
 
     public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
@@ -73,7 +74,7 @@ public final class DeathBoxUtils {
 
 
     public static boolean isAnyoneUsingDeathBox(String boxID) {
-        for (UUID p : MainUtils.getOnlinePlayers()) {
+        for (UUID p : PluginUtils.getOnlinePlayers()) {
             if (Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder() instanceof DeathBoxInventoryHolder) {
                 DeathBoxInventoryHolder holder = (DeathBoxInventoryHolder) Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder();
                 if (Objects.equals(holder.getChestID(), boxID)) {
@@ -106,7 +107,18 @@ public final class DeathBoxUtils {
     public static boolean isCanReplaceBlock(Location deathBoxLocation) {
         Material deathBoxMat = deathBoxLocation.getBlock().getType();
         Material signMat = new DeathBoxLocation(deathBoxLocation).getSignLocation().getBlock().getType();
-        ArrayList<Material> materials = Func.getDeathBoxReplaceBlocks();
+        ArrayList<Material> materials = PluginCore.getDeathBoxReplaceBlocks();
         return materials.contains(deathBoxMat) && materials.contains(signMat);
+    }
+
+    public static ArrayList<Location> getAllDeathBoxLocations(Player player) {
+        ArrayList<Location> locations = new ArrayList<>();
+        ConfigurationSection configurationSection = PluginCore.getDeathBoxConfig().getConfigurationSection("box");
+        for (String key : configurationSection.getKeys(false)) {
+            if (PluginCore.getDeathBoxConfig().getString("box." + key + ".owner").equals(player.getUniqueId().toString())) {
+                locations.add(PluginCore.getDeathBoxConfig().getLocation("box." + key + ".chest_loc"));
+            }
+        }
+        return locations;
     }
 }

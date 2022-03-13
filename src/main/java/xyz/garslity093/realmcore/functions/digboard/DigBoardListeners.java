@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc.digboard;
+package xyz.garslity093.realmcore.functions.digboard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

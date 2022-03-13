@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc;
+package xyz.garslity093.realmcore.functions.deathbox;
 
 import org.bukkit.Location;
 import org.bukkit.World;

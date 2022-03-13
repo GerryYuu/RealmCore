@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc;
+package xyz.garslity093.realmcore;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -6,15 +6,15 @@ import org.bukkit.command.TabExecutor;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Command implements TabExecutor {
+public final class PluginCommands implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] strings) {
         if (strings.length >= 1) {
             if (strings[0].equalsIgnoreCase("reload")) {
                 commandSender.sendMessage("重载成功.");
-                Func.getPlugin().reloadConfig();
-                Func.reloadBoxConfig();
-                Func.loadDeathBoxMaterials();
+                PluginCore.getPlugin().reloadConfig();
+                PluginCore.reloadBoxConfig();
+                PluginCore.loadDeathBoxMaterials();
             }
         }
         return true;
