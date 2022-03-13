@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xyz.garslity093.serverfunc.DeathBoxLocation;
 import xyz.garslity093.serverfunc.Func;
-import xyz.garslity093.serverfunc.ServerUtils;
+import xyz.garslity093.serverfunc.MainUtils;
 import xyz.garslity093.serverfunc.deathbox.DeathBoxInventoryHolder;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class DeathBoxUtils {
 
 
     public static boolean isAnyoneUsingDeathBox(String boxID) {
-        for (UUID p : ServerUtils.getOnlinePlayers()) {
+        for (UUID p : MainUtils.getOnlinePlayers()) {
             if (Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder() instanceof DeathBoxInventoryHolder) {
                 DeathBoxInventoryHolder holder = (DeathBoxInventoryHolder) Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder();
                 if (Objects.equals(holder.getChestID(), boxID)) {
