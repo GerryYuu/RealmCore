@@ -22,7 +22,7 @@ import xyz.garslity093.serverfunc.deathbox.utils.DeathBoxUtils;
 
 import java.util.ArrayList;
 
-public class DeathBoxListeners implements Listener {
+public final class DeathBoxListeners implements Listener {
     @EventHandler
     public void onBlockBreak1(BlockBreakEvent event) {
         if (event.getBlock().getType() == Material.OAK_WALL_SIGN) {

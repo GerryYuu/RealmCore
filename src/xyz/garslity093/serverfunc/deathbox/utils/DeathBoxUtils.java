@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
-public class DeathBoxUtils {
+public final class DeathBoxUtils {
     public static void addBox(DeathBoxLocation deathBoxLocation, Player player) {
         deathBoxLocation.getBlock().setType(Material.CHEST);
         Location signLoc = deathBoxLocation.getSignLocation();

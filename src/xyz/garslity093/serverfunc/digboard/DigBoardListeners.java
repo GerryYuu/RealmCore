@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scoreboard.Score;
 
-public class DigBoardListeners implements org.bukkit.event.Listener {
+public final class DigBoardListeners implements org.bukkit.event.Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("dig").getScore(event.getPlayer());
