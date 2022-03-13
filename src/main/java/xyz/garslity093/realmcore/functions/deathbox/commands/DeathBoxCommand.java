@@ -20,20 +20,19 @@ public final class DeathBoxCommand implements CommandExecutor {
             if (locations.size() > 0) {
                 for (Location location : locations) {
                     String world;
-                    switch (location.getWorld().getName()) {
-                        case "world":
-                            world = "主世界";
-                        case "world_nether":
-                            world = "地狱";
-                        case "world_the_end":
-                            world = "末地";
-                        default:
-                            world = location.getWorld().getName();
+                    if (location.getWorld().getName().equalsIgnoreCase("world")) {
+                        world = "主世界";
+                    } else if (location.getWorld().getName().equalsIgnoreCase("world_nether")) {
+                        world = "地狱";
+                    } else if (location.getWorld().getName().equalsIgnoreCase("world_the_end")) {
+                        world = "末地";
+                    } else {
+                        world = location.getWorld().getName().toLowerCase();
                     }
                     int locX = location.getBlockX();
                     int locY = location.getBlockY();
                     int locZ = location.getBlockZ();
-                    player.sendMessage(PluginUtils.transColor("&a位置: &f" + locX + "," + locY + "," + locZ + "&7| &a世界: &f" + world));
+                    player.sendMessage(PluginUtils.transColor("&a位置: &f" + locX + "," + locY + "," + locZ + " &7| &a世界: &f" + world));
                 }
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0F);
             } else {

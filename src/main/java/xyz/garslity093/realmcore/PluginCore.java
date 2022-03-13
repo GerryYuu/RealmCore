@@ -86,8 +86,8 @@ public final class PluginCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DigBoardListeners(), this);
         getServer().getPluginManager().registerEvents(new DeathBoxListeners(), this);
         getServer().getPluginManager().registerEvents(new MOTDChangerListeners(), this);
-        getServer().getPluginCommand("serverfunc").setExecutor(new PluginCommands());
-        getServer().getPluginCommand("serverfunc").setTabCompleter(new PluginCommands());
+        getServer().getPluginCommand("realmcore").setExecutor(new PluginCommands());
+        getServer().getPluginCommand("realmcore").setTabCompleter(new PluginCommands());
         getServer().getPluginCommand("deathbox").setExecutor(new DeathBoxCommand());
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
