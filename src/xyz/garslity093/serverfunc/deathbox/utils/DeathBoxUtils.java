@@ -48,9 +48,9 @@ public class DeathBoxUtils {
     }
 
     public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
+        Location signLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ() - 1);
         Location deathBoxLocation;
-        if (playerDeathLocation.getBlock().getType() == Material.AIR &&
-                new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ() - 1).getBlock().getType() == Material.AIR) {
+        if (isCanReplaceBlock(playerDeathLocation)) {
             deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ());
         } else {
             int y = 1;
@@ -102,4 +102,11 @@ public class DeathBoxUtils {
         }
         return blockUnderBox != Material.AIR && blockUnderSign != Material.AIR;
     }*/
+
+    public static boolean isCanReplaceBlock(Location deathBoxLocation) {
+        Material deathBoxMat = deathBoxLocation.getBlock().getType();
+        Material signMat = new DeathBoxLocation(deathBoxLocation).getSignLocation().getBlock().getType();
+        ArrayList<Material> materials = Func.getDeathBoxReplaceBlocks();
+        return materials.contains(deathBoxMat) && materials.contains(signMat);
+    }
 }

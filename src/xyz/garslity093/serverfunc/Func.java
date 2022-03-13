@@ -11,6 +11,9 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import xyz.garslity093.serverfunc.deathbox.DeathBoxListeners;
+import xyz.garslity093.serverfunc.digboard.DigBoardListeners;
+import xyz.garslity093.serverfunc.motdchanger.MOTDChangerListeners;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +70,7 @@ public final class Func extends JavaPlugin {
     }
 
     public static void loadDeathBoxMaterials() {
-        deathBoxReplaceBlocks = CommonUtils.legalMaterialsFilter(Func.getPlugin().getConfig().getStringList("deathBoxSettings.replaceBlocks"));
+        deathBoxReplaceBlocks = MainUtils.legalMaterialsFilter(Func.getPlugin().getConfig().getStringList("deathBoxSettings.replaceBlocks"));
     }
 
     @Override
@@ -78,7 +81,10 @@ public final class Func extends JavaPlugin {
             saveResource("box-record.yml", false);
         }
         boxConfig = YamlConfiguration.loadConfiguration(boxFile);
-        getServer().getPluginManager().registerEvents(new Listeners(), this);
+        getServer().getPluginManager().registerEvents(new MainListeners(), this);
+        getServer().getPluginManager().registerEvents(new DigBoardListeners(), this);
+        getServer().getPluginManager().registerEvents(new DeathBoxListeners(), this);
+        getServer().getPluginManager().registerEvents(new MOTDChangerListeners(), this);
         getServer().getPluginCommand("serverfunc").setExecutor(new Command());
         getServer().getPluginCommand("serverfunc").setTabCompleter(new Command());
         if (!new File(getDataFolder(), "config.yml").exists()) {

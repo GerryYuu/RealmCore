@@ -1,4 +1,4 @@
-package xyz.garslity093.serverfunc;
+package xyz.garslity093.serverfunc.deathbox;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,24 +17,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Score;
-import xyz.garslity093.serverfunc.deathbox.DeathBoxInventoryHolder;
+import xyz.garslity093.serverfunc.Func;
 import xyz.garslity093.serverfunc.deathbox.utils.DeathBoxUtils;
 
 import java.util.ArrayList;
 
-public final class Listeners implements Listener {
-
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("dig").getScore(event.getPlayer());
-        if (score.isScoreSet() == true) {
-            score.setScore(score.getScore() + 1);
-        } else {
-            score.setScore(1);
-        }
-    }
-
+public class DeathBoxListeners implements Listener {
     @EventHandler
     public void onBlockBreak1(BlockBreakEvent event) {
         if (event.getBlock().getType() == Material.OAK_WALL_SIGN) {

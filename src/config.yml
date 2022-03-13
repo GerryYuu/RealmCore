@@ -1,2 +1,14 @@
+motdChangerSettings:
+  line1: ""
+  line2: ""
+
 deathBoxSettings:
-  replaceBlocks: [ ]
+  replaceBlocks:
+    - "AIR"
+    - "SNOW"
+    - "GRASS"
+    - "TALL_GRASS"
+    - "SEAGRASS"
+    - "TALL_SEAGRASS"
+    - "TORCH"
+    - "WATER"
