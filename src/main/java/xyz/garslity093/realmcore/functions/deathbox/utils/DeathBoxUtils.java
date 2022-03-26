@@ -3,6 +3,7 @@ package xyz.garslity093.realmcore.functions.deathbox.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
@@ -48,10 +49,10 @@ public final class DeathBoxUtils {
         PluginCore.saveBoxRecord();
     }
 
-    public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
+    /*public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
         Location signLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ() - 1);
         Location deathBoxLocation;
-        if (isCanReplaceBlock(playerDeathLocation)) {
+        if (isCanReplace(playerDeathLocation)) {
             deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ());
         } else {
             int y = 1;
@@ -70,10 +71,33 @@ public final class DeathBoxUtils {
             deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ());
         }
         return new DeathBoxLocation(deathBoxLocation);
+    }*/
+
+    public static DeathBoxLocation getNewBoxLoc(Location playerDeathLoc) {
+        World world = playerDeathLoc.getWorld();
+        int x = playerDeathLoc.getBlockX();
+        int y = playerDeathLoc.getBlockY();
+        int z = playerDeathLoc.getBlockZ();
+        int worldMaxHeight = world.getMaxHeight();
+        int worldMinHeight = world.getMinHeight();
+        if (isOnGround(playerDeathLoc)) {
+            if (isCanReplace(playerDeathLoc)) {
+                return new DeathBoxLocation(playerDeathLoc);
+            }
+        }
+        Location location = new Location(world, x, y, z);
+        for (int i = worldMaxHeight - 1; i >= worldMinHeight; i--) {
+            location = new Location(world, x, i, z);
+            if (isOnGround(location)) {
+                if (isCanReplace(location)) {
+                    return new DeathBoxLocation(location);
+                }
+            }
+        }
+        return new DeathBoxLocation(location);
     }
 
-
-    public static boolean isAnyoneUsingDeathBox(String boxID) {
+    public static boolean isBoxAlreadyOpen(String boxID) {
         for (UUID p : PluginUtils.getOnlinePlayers()) {
             if (Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder() instanceof DeathBoxInventoryHolder) {
                 DeathBoxInventoryHolder holder = (DeathBoxInventoryHolder) Bukkit.getPlayer(p).getOpenInventory().getTopInventory().getHolder();
@@ -104,7 +128,12 @@ public final class DeathBoxUtils {
         return blockUnderBox != Material.AIR && blockUnderSign != Material.AIR;
     }*/
 
-    public static boolean isCanReplaceBlock(Location deathBoxLocation) {
+    public static boolean isOnGround(Location location) {
+        Material blockTypeUnderBox = new Location(location.getWorld(), location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()).getBlock().getType();
+        return blockTypeUnderBox != Material.AIR;
+    }
+
+    public static boolean isCanReplace(Location deathBoxLocation) {
         Material deathBoxMat = deathBoxLocation.getBlock().getType();
         Material signMat = new DeathBoxLocation(deathBoxLocation).getSignLocation().getBlock().getType();
         ArrayList<Material> materials = PluginCore.getDeathBoxReplaceBlocks();

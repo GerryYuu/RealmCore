@@ -49,7 +49,7 @@ public final class DeathBoxListeners implements Listener {
                         event.getBlock().getLocation().getBlockY() == location.getBlockY() &&
                         event.getBlock().getLocation().getBlockZ() == location.getBlockZ() &&
                         event.getBlock().getLocation().getWorld() == location.getWorld()) {
-                    if (!DeathBoxUtils.isAnyoneUsingDeathBox(PluginCore.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
+                    if (!DeathBoxUtils.isBoxAlreadyOpen(PluginCore.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
                         new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ() - 1).getBlock().setType(Material.AIR);
                         ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) PluginCore.getDeathBoxConfig().getList("box." + key + ".items");
                         for (ItemStack itemStack : itemStacks) {
@@ -76,7 +76,7 @@ public final class DeathBoxListeners implements Listener {
             if (!player.getInventory().isEmpty()) {
                 if (player.getLocation().getBlockY() >= player.getWorld().getMinHeight() &&
                         player.getLocation().getBlockY() < player.getWorld().getMaxHeight()) {
-                    DeathBoxUtils.addBox(DeathBoxUtils.getNewChestLoc(player.getLocation()), player);
+                    DeathBoxUtils.addBox(DeathBoxUtils.getNewBoxLoc(player.getLocation()), player);
                     event.getDrops().clear();
                 }
             }
@@ -95,7 +95,7 @@ public final class DeathBoxListeners implements Listener {
                             event.getClickedBlock().getLocation().getWorld() == location.getWorld()) {
                         event.setCancelled(true);
                         Inventory inventory = Bukkit.createInventory(new DeathBoxInventoryHolder(PluginCore.getDeathBoxConfig().getString("box." + key + ".chest_id")), 54);
-                        if (!DeathBoxUtils.isAnyoneUsingDeathBox(PluginCore.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
+                        if (!DeathBoxUtils.isBoxAlreadyOpen(PluginCore.getDeathBoxConfig().getString("box." + key + ".chest_id"))) {
                             ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>) PluginCore.getDeathBoxConfig().getList("box." + key + ".items");
                             for (ItemStack itemStack : itemStacks) {
                                 inventory.addItem(itemStack);
