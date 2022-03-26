@@ -1,0 +1,15 @@
+name: RealmCore
+version: '${project.version}'
+main: xyz.garslity093.realmcore.PluginCore
+api-version: 1.17
+authors: [ Gerry5126 ]
+commands:
+  realmcore:
+    aliases:
+      - func
+      - sf
+    permission: "realmcore.use"
+
+  deathbox:
+    aliases:
+      - box
