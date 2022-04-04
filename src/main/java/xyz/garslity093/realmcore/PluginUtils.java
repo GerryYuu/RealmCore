@@ -34,4 +34,8 @@ public final class PluginUtils {
     public static String transColor(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
+
+    public static long getUnixTimestamp() {
+        return (System.currentTimeMillis() / 1000);
+    }
 }

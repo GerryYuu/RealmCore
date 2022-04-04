@@ -16,7 +16,7 @@ public final class DeathBoxCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] strings) {
         if (commandSender instanceof Player) {
             Player player = ((Player) commandSender);
-            ArrayList<Location> locations = DeathBoxUtils.getAllDeathBoxLocations(player);
+            ArrayList<Location> locations = DeathBoxUtils.getAllBoxLocations(player);
             if (locations.size() > 0) {
                 for (Location location : locations) {
                     String world;

@@ -13,16 +13,15 @@ import org.bukkit.inventory.ItemStack;
 import xyz.garslity093.realmcore.PluginCore;
 import xyz.garslity093.realmcore.PluginUtils;
 import xyz.garslity093.realmcore.functions.deathbox.DeathBoxInventoryHolder;
-import xyz.garslity093.realmcore.functions.deathbox.DeathBoxLocation;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
 public final class DeathBoxUtils {
-    public static void addBox(DeathBoxLocation deathBoxLocation, Player player) {
-        deathBoxLocation.getBlock().setType(Material.CHEST);
-        Location signLoc = deathBoxLocation.getSignLocation();
+    public static void addBox(Location boxLocation, Player player) {
+        getSignLocByBoxLoc(boxLocation).getBlock().setType(Material.CHEST);
+        Location signLoc = getSignLocByBoxLoc(boxLocation);
         signLoc.getBlock().setType(Material.OAK_WALL_SIGN);
         Sign sign = (Sign) signLoc.getBlock().getState();
         sign.setLine(0, "§b[遗物箱]");
@@ -31,49 +30,25 @@ public final class DeathBoxUtils {
         sign.update();
         WallSign wallSign = (WallSign) signLoc.getBlock().getBlockData();
         wallSign.setFacing(BlockFace.NORTH);
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_loc", new Location(deathBoxLocation.getWorld(),
-                deathBoxLocation.getBlockX(),
-                deathBoxLocation.getBlockY(),
-                deathBoxLocation.getBlockZ()));
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".sign_loc", signLoc);
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner", player.getUniqueId().toString());
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".owner_name", player.getName());
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".chest_id", UUID.randomUUID().toString());
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".chest_loc", new Location(getSignLocByBoxLoc(boxLocation).getWorld(),
+                getSignLocByBoxLoc(boxLocation).getBlockX(),
+                getSignLocByBoxLoc(boxLocation).getBlockY(),
+                getSignLocByBoxLoc(boxLocation).getBlockZ()));
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".sign_loc", signLoc);
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".owner", player.getUniqueId().toString());
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".owner_name", player.getName());
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".chest_id", UUID.randomUUID().toString());
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack != null) {
                 itemStacks.add(itemStack);
             }
         }
-        PluginCore.getDeathBoxConfig().set("box." + deathBoxLocation.getBlockX() + "," + deathBoxLocation.getBlockY() + "," + deathBoxLocation.getBlockZ() + ".items", itemStacks);
+        PluginCore.getDeathBoxConfig().set("box." + getSignLocByBoxLoc(boxLocation).getBlockX() + "," + getSignLocByBoxLoc(boxLocation).getBlockY() + "," + getSignLocByBoxLoc(boxLocation).getBlockZ() + ".items", itemStacks);
         PluginCore.saveBoxRecord();
     }
 
-    /*public static DeathBoxLocation getNewChestLoc(Location playerDeathLocation) {
-        Location signLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ() - 1);
-        Location deathBoxLocation;
-        if (isCanReplace(playerDeathLocation)) {
-            deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY(), playerDeathLocation.getBlockZ());
-        } else {
-            int y = 1;
-            while (true) {
-                if (!(playerDeathLocation.getBlockY() + y == playerDeathLocation.getWorld().getMaxHeight())) {
-                    if (new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ()).getBlock().getType() == Material.AIR &&
-                            new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ() - 1).getBlock().getType() == Material.AIR) {
-                        break;
-                    } else {
-                        y++;
-                    }
-                } else {
-                    break;
-                }
-            }
-            deathBoxLocation = new Location(playerDeathLocation.getWorld(), playerDeathLocation.getBlockX(), playerDeathLocation.getBlockY() + y, playerDeathLocation.getBlockZ());
-        }
-        return new DeathBoxLocation(deathBoxLocation);
-    }*/
-
-    public static DeathBoxLocation getNewBoxLoc(Location playerDeathLoc) {
+    public static Location getNewBoxLoc(Location playerDeathLoc) {
         World world = playerDeathLoc.getWorld();
         int x = playerDeathLoc.getBlockX();
         int y = playerDeathLoc.getBlockY();
@@ -82,7 +57,7 @@ public final class DeathBoxUtils {
         int worldMinHeight = world.getMinHeight();
         if (isOnGround(playerDeathLoc)) {
             if (isCanReplace(playerDeathLoc)) {
-                return new DeathBoxLocation(playerDeathLoc);
+                return playerDeathLoc;
             }
         }
         Location location = new Location(world, x, y, z);
@@ -90,11 +65,11 @@ public final class DeathBoxUtils {
             location = new Location(world, x, i, z);
             if (isOnGround(location)) {
                 if (isCanReplace(location)) {
-                    return new DeathBoxLocation(location);
+                    return location;
                 }
             }
         }
-        return new DeathBoxLocation(location);
+        return playerDeathLoc;
     }
 
     public static boolean isBoxAlreadyOpen(String boxID) {
@@ -109,38 +84,19 @@ public final class DeathBoxUtils {
         return false;
     }
 
-    /*public static boolean isOnGround(DeathBoxLocation deathBoxLocation) {
-        Material blockUnderBox = new Location(deathBoxLocation.getWorld(),
-                deathBoxLocation.getBlockX(),
-                deathBoxLocation.getBlockY() - 1,
-                deathBoxLocation.getBlockZ()).getBlock().getType();
-        Material blockUnderSign = new Location(deathBoxLocation.getWorld(),
-                deathBoxLocation.getBlockX(),
-                deathBoxLocation.getBlockY() - 1,
-                deathBoxLocation.getBlockZ() - 1).getBlock().getType();
-        if (Func.getDeathBoxReplaceBlocks().size() > 0)  {
-            if (Func.getDeathBoxReplaceBlocks().contains(blockUnderBox)) {
-                if (Func.getDeathBoxReplaceBlocks().contains(blockUnderSign)) {
-                    return true;
-                }
-            }
-        }
-        return blockUnderBox != Material.AIR && blockUnderSign != Material.AIR;
-    }*/
-
     public static boolean isOnGround(Location location) {
         Material blockTypeUnderBox = new Location(location.getWorld(), location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()).getBlock().getType();
         return blockTypeUnderBox != Material.AIR;
     }
 
-    public static boolean isCanReplace(Location deathBoxLocation) {
-        Material deathBoxMat = deathBoxLocation.getBlock().getType();
-        Material signMat = new DeathBoxLocation(deathBoxLocation).getSignLocation().getBlock().getType();
+    public static boolean isCanReplace(Location boxLocation) {
+        Material deathBoxMat = boxLocation.getBlock().getType();
+        Material signMat = getSignLocByBoxLoc(boxLocation).getBlock().getType();
         ArrayList<Material> materials = PluginCore.getDeathBoxReplaceBlocks();
         return materials.contains(deathBoxMat) && materials.contains(signMat);
     }
 
-    public static ArrayList<Location> getAllDeathBoxLocations(Player player) {
+    public static ArrayList<Location> getAllBoxLocations(Player player) {
         ArrayList<Location> locations = new ArrayList<>();
         ConfigurationSection configurationSection = PluginCore.getDeathBoxConfig().getConfigurationSection("box");
         for (String key : configurationSection.getKeys(false)) {
@@ -149,5 +105,12 @@ public final class DeathBoxUtils {
             }
         }
         return locations;
+    }
+
+    public static Location getSignLocByBoxLoc(Location boxLoc) {
+        return new Location(boxLoc.getWorld(),
+                boxLoc.getBlockX(),
+                boxLoc.getBlockY(),
+                boxLoc.getBlockZ() - 1);
     }
 }

@@ -1,5 +1,6 @@
 package xyz.garslity093.realmcore;
 
+import me.vagdedes.mysql.database.MySQL;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -18,11 +19,13 @@ public final class PluginCommands implements TabExecutor {
                 PluginCore.getPlugin().reloadConfig();
                 PluginCore.reloadBoxConfig();
                 PluginCore.loadDeathBoxMaterials();
+                System.out.println(MySQL.isConnected());
             } else if (strings[0].equalsIgnoreCase("debug")) {
                 Player player = (Player) commandSender;
                 commandSender.sendMessage(String.valueOf(player.getWorld().getMaxHeight()));
                 Material blockTypeUnderBox = new Location(player.getWorld(), player.getLocation().getBlockX(), player.getLocation().getBlockY() - 1, player.getLocation().getBlockZ()).getBlock().getType();
                 player.sendMessage(String.valueOf(blockTypeUnderBox != Material.AIR));
+                player.sendMessage(String.valueOf((System.currentTimeMillis() / 1000)));
             }
         }
         return true;
