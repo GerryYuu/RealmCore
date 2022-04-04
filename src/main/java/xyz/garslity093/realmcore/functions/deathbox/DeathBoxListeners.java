@@ -12,7 +12,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -69,7 +68,7 @@ public final class DeathBoxListeners implements Listener {
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity().getPlayer();
         if (!event.getKeepInventory()) {
@@ -81,7 +80,7 @@ public final class DeathBoxListeners implements Listener {
                 }
             }
         }
-    }
+    }*/
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
