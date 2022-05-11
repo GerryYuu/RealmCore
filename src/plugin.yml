@@ -1,11 +1,11 @@
-main: xyz.garslity093.serverfunc.Func
-name: GrSurFunc
-version: 1.0.0
+main: xyz.garslity093.RealmCore.PluginCore
+name: RealmCore
+version: 1.1.0
 author: Gerry5126
 api-version: 1.13
 commands:
-  serverfunc:
+  realmcore:
     aliases:
-      - func
-      - sf
-    permission: "serverfunc.use"
+      - rc
+      - core
+    permission: "realmcore.use"
