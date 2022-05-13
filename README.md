@@ -1,7 +1,7 @@
 # RealmCore
 [![CodeFactor](https://www.codefactor.io/repository/github/gerryyuu/realmcore/badge)](https://www.codefactor.io/repository/github/gerryyuu/realmcore)<br>
-Ocean 计划已经结束.
-此项目只用作纪念.
+Ocean 计划已经结束.<br>
+此项目只用作纪念.<br>
 
 OceanRealm (通常被称作为 Ocean 外服) 的核心插件.<br>
 由于团队是爱好性质的团队，且精力有限，此项目在无必要的情况下不会维护.<br>
