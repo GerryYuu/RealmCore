@@ -1,5 +1,4 @@
 # RealmCore
-[![CodeFactor](https://www.codefactor.io/repository/github/gerryyuu/realmcore/badge)](https://www.codefactor.io/repository/github/gerryyuu/realmcore)<br>
 Ocean 计划已经结束.<br>
 此项目只用作纪念.<br>
 
